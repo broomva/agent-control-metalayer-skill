@@ -71,6 +71,20 @@ check_contains() {
   fi
 }
 
+check_hooks_path() {
+  if [ ! -d "$repo_path/.git" ]; then
+    ok "git hooks path check skipped (not a git repo)"
+    return
+  fi
+  local hooks_path
+  hooks_path=$(git -C "$repo_path" config --get core.hooksPath || true)
+  if [ "$hooks_path" = ".githooks" ]; then
+    ok "git core.hooksPath configured"
+  else
+    fail "git core.hooksPath configured (.githooks expected)"
+  fi
+}
+
 echo "Auditing control metalayer: $repo_path"
 echo
 
@@ -107,12 +121,23 @@ if [ "$strict" -eq 1 ]; then
     ".control/state.json"
     "docs/control/CONTROL_LOOP.md"
     "evals/control-metrics.yaml"
+    "scripts/control/install_hooks.sh"
+    ".githooks/pre-commit"
+    ".githooks/pre-push"
     "scripts/control/recover.sh"
+    "scripts/control/web_e2e.sh"
+    "scripts/control/cli_e2e.sh"
+    "tests/e2e/web/smoke.spec.ts"
+    "tests/e2e/cli/smoke.sh"
+    "playwright.config.ts"
+    ".github/workflows/web-e2e.yml"
+    ".github/workflows/cli-e2e.yml"
     ".github/workflows/control-nightly.yml"
   )
   for rel in "${strict_files[@]}"; do
     check_file "$rel"
   done
+  check_hooks_path
 fi
 
 echo

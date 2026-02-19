@@ -13,6 +13,8 @@ This repository operates as a control loop for autonomous agent development.
 
 - CI checks
 - Test outcomes
+- Web E2E outcomes
+- CLI E2E outcomes
 - Static checks
 - Runtime traces/logs
 
@@ -28,6 +30,7 @@ This repository operates as a control loop for autonomous agent development.
 - Script updates
 - Policy updates
 - Documentation updates
+- Hook and workflow updates
 
 ## Feedback Loop
 

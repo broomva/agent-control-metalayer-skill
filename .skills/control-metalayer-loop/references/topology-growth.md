@@ -9,6 +9,8 @@ This skill uses a split between product code and control-plane artifacts.
   - `.control/` for policy, command catalog, topology, and state.
   - `docs/control/` for architecture, observability, and loop docs.
   - `scripts/control/` for deterministic command wrappers.
+  - `.githooks/` for local gate enforcement.
+  - `tests/e2e/web/` and `tests/e2e/cli/` for integration checks.
   - `evals/` for control metrics and drift tracking.
 
 ## Growth Path

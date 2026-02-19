@@ -10,6 +10,9 @@ python3 scripts/control_wizard.py init <repo-path> --profile governed
 python3 scripts/control_wizard.py init <repo-path> --profile autonomous
 ```
 
+- `governed` installs policy/commands/topology + hooks primitives.
+- `autonomous` installs governed + recovery + web/cli E2E primitives.
+
 ## Audit
 
 ```bash
@@ -27,5 +30,6 @@ python3 scripts/control_wizard.py status <repo-path>
 
 ```bash
 python3 scripts/control_wizard.py primitive list
-python3 scripts/control_wizard.py primitive add policy loop --repo <repo-path>
+python3 scripts/control_wizard.py primitive add policy loop hooks --repo <repo-path>
+python3 scripts/control_wizard.py primitive add web cli --repo <repo-path>
 ```

@@ -52,9 +52,12 @@ class Primitive(str, Enum):
     topology = "topology"
     loop = "loop"
     metrics = "metrics"
+    hooks = "hooks"
     recovery = "recovery"
     state = "state"
     nightly = "nightly"
+    web = "web"
+    cli = "cli"
 
 
 PRIMITIVE_FILES: Dict[Primitive, Tuple[str, ...]] = {
@@ -63,9 +66,25 @@ PRIMITIVE_FILES: Dict[Primitive, Tuple[str, ...]] = {
     Primitive.topology: (".control/topology.yaml",),
     Primitive.loop: ("docs/control/CONTROL_LOOP.md",),
     Primitive.metrics: ("evals/control-metrics.yaml",),
+    Primitive.hooks: (
+        "scripts/control/install_hooks.sh",
+        ".githooks/pre-commit",
+        ".githooks/pre-push",
+    ),
     Primitive.recovery: ("scripts/control/recover.sh",),
     Primitive.state: (".control/state.json",),
     Primitive.nightly: (".github/workflows/control-nightly.yml",),
+    Primitive.web: (
+        "scripts/control/web_e2e.sh",
+        ".github/workflows/web-e2e.yml",
+        "tests/e2e/web/smoke.spec.ts",
+        "playwright.config.ts",
+    ),
+    Primitive.cli: (
+        "scripts/control/cli_e2e.sh",
+        ".github/workflows/cli-e2e.yml",
+        "tests/e2e/cli/smoke.sh",
+    ),
 }
 
 GOVERNED_PRIMITIVES: Tuple[Primitive, ...] = (
@@ -74,6 +93,7 @@ GOVERNED_PRIMITIVES: Tuple[Primitive, ...] = (
     Primitive.topology,
     Primitive.loop,
     Primitive.metrics,
+    Primitive.hooks,
 )
 
 AUTONOMOUS_PRIMITIVES: Tuple[Primitive, ...] = (
@@ -81,6 +101,8 @@ AUTONOMOUS_PRIMITIVES: Tuple[Primitive, ...] = (
     Primitive.recovery,
     Primitive.state,
     Primitive.nightly,
+    Primitive.web,
+    Primitive.cli,
 )
 
 
@@ -114,9 +136,21 @@ def _copy_template(relative_path: str, repo: Path, force: bool) -> str:
         return "skip"
 
     target.write_bytes(source.read_bytes())
-    if target.suffix == ".sh":
+    if target.suffix == ".sh" or relative_path.startswith(".githooks/"):
         target.chmod(0o755)
     return "write"
+
+
+def _activate_hooks(repo: Path) -> None:
+    install_script = repo / "scripts" / "control" / "install_hooks.sh"
+    if not install_script.exists():
+        return
+    result = subprocess.run([str(install_script)], cwd=str(repo), check=False)
+    if result.returncode != 0:
+        typer.secho(
+            "  [warn] failed to activate git hooks automatically; run scripts/control/install_hooks.sh manually.",
+            fg=typer.colors.YELLOW,
+        )
 
 
 def _apply_primitives(repo: Path, primitives: Iterable[Primitive], force: bool) -> None:
@@ -126,6 +160,8 @@ def _apply_primitives(repo: Path, primitives: Iterable[Primitive], force: bool) 
             state = _copy_template(relative_path, repo, force)
             label = "write" if state == "write" else "skip "
             typer.echo(f"  [{label}] {relative_path}")
+        if primitive == Primitive.hooks:
+            _activate_hooks(repo)
 
 
 @app.command()

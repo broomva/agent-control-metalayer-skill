@@ -1,4 +1,4 @@
-.PHONY: smoke check test recover control-audit ci
+.PHONY: smoke check test recover hooks-install web-e2e cli-e2e ci-e2e control-audit ci
 
 smoke:
 	@./scripts/control/smoke.sh
@@ -10,9 +10,20 @@ test:
 	@./scripts/control/test.sh
 
 recover:
-	@./scripts/control/recover.sh
+	@if [ -x ./scripts/control/recover.sh ]; then ./scripts/control/recover.sh; else echo "recover primitive not installed"; exit 2; fi
+
+hooks-install:
+	@if [ -x ./scripts/control/install_hooks.sh ]; then ./scripts/control/install_hooks.sh; else echo "hooks primitive not installed"; exit 2; fi
+
+web-e2e:
+	@if [ -x ./scripts/control/web_e2e.sh ]; then ./scripts/control/web_e2e.sh; else echo "web primitive not installed"; exit 2; fi
+
+cli-e2e:
+	@if [ -x ./scripts/control/cli_e2e.sh ]; then ./scripts/control/cli_e2e.sh; else echo "cli primitive not installed"; exit 2; fi
 
 control-audit:
 	@./scripts/audit_control.sh .
 
 ci: smoke check test
+
+ci-e2e: ci web-e2e cli-e2e

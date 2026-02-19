@@ -16,6 +16,9 @@ Expose a stable command surface through wrappers:
 - `make smoke`
 - `make check`
 - `make test`
+- `make web-e2e`
+- `make cli-e2e`
+- `make hooks-install`
 - `make recover`
 - `make control-audit`
 
@@ -32,3 +35,9 @@ For each command:
 - Escalation path
 
 Store this in `.control/commands.yaml`.
+
+## End-To-End Validation
+
+- Web changes require browser-level E2E checks against deployed or preview URLs.
+- CLI changes require binary-level E2E checks using real command invocations.
+- Keep these checks in dedicated workflows so failures are isolated and actionable.

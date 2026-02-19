@@ -25,8 +25,8 @@ python3 scripts/control_wizard.py init <repo-path> --profile governed
 Profiles:
 
 - `baseline`: minimal harness and command surface.
-- `governed`: baseline + policy/commands/topology + control loop + metrics.
-- `autonomous`: governed + recovery and nightly entropy controls.
+- `governed`: baseline + policy/commands/topology + control loop + metrics + git hooks.
+- `autonomous`: governed + recovery/nightly controls + web and CLI E2E primitives.
 
 ## Workflow
 
@@ -81,7 +81,14 @@ python3 scripts/control_wizard.py init <repo-path> --profile autonomous
 
 Adds:
 
+- `scripts/control/install_hooks.sh` + `.githooks/*`
 - `scripts/control/recover.sh`
+- `scripts/control/web_e2e.sh`
+- `scripts/control/cli_e2e.sh`
+- `.github/workflows/web-e2e.yml`
+- `.github/workflows/cli-e2e.yml`
+- `tests/e2e/web/*` + `playwright.config.ts`
+- `tests/e2e/cli/smoke.sh`
 - `.control/state.json`
 - `.github/workflows/control-nightly.yml`
 
@@ -99,6 +106,7 @@ Treat audit failures as blocking until corrected.
 ## Step 5: Operate And Grow
 
 - Keep command names stable (`smoke`, `check`, `test`, `recover`).
+- Keep E2E command names stable (`web-e2e`, `cli-e2e`).
 - Keep policy and command catalog synchronized with actual behavior.
 - Track control metrics and adjust setpoints deliberately.
 - Prune stale rules/scripts/docs to prevent entropy growth.

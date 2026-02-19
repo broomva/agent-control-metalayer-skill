@@ -12,6 +12,7 @@ npx skills add broomva/agent-control-metalayer-skill --skill control-metalayer-l
 
 ```bash
 python3 .agents/skills/control-metalayer-loop/scripts/control_wizard.py init . --profile governed
+python3 .agents/skills/control-metalayer-loop/scripts/control_wizard.py init . --profile autonomous
 python3 .agents/skills/control-metalayer-loop/scripts/control_wizard.py audit . --strict
 python3 .agents/skills/control-metalayer-loop/scripts/control_wizard.py status .
 ```
