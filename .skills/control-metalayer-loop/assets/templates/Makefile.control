@@ -1,0 +1,18 @@
+.PHONY: smoke check test recover control-audit ci
+
+smoke:
+	@./scripts/control/smoke.sh
+
+check:
+	@./scripts/control/check.sh
+
+test:
+	@./scripts/control/test.sh
+
+recover:
+	@./scripts/control/recover.sh
+
+control-audit:
+	@./scripts/audit_control.sh .
+
+ci: smoke check test
